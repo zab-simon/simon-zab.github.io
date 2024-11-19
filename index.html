@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WE LOVE YOU © iCat</title>
+    <title>We Love You © iCat</title>
     <style>
         body {
             display: flex;
@@ -52,7 +52,7 @@
 <body>
     <button id="showCatBtn">Show Cat</button>
     <img id="catImage" alt="Random Cute Cat">
-    <button id="nextCatBtn">Show Me Next Cat</button>
+    <button id="nextCatBtn">More</button>
     
     <script>
         const showCatBtn = document.getElementById('showCatBtn');
@@ -83,18 +83,18 @@
             }
         }
 
-        // Show first cat
+        // Show first cat and hide "Show Cat" button
         showCatBtn.addEventListener('click', async () => {
             showCatBtn.textContent = 'Loading...';
             await fetchCat();
-            showCatBtn.textContent = 'Show Cat';
+            showCatBtn.style.display = 'none';
         });
 
-        // Show next random cat
+        // Show next random cat (renamed to "More")
         nextCatBtn.addEventListener('click', async () => {
             nextCatBtn.textContent = 'Loading...';
             await fetchCat();
-            nextCatBtn.textContent = 'Show Me Next Cat';
+            nextCatBtn.textContent = 'More';
         });
     </script>
 </body>
