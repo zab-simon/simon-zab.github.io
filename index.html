@@ -57,7 +57,7 @@
     </style>
 </head>
 <body>
-    <button id="showCatBtn" disabled>Show Cat</button>
+    <button id="showCatBtn">Show Cat</button>
     <button id="connectBtn">wallet</button>
     <img id="catImage" alt="Random Cute Cat">
     <button id="nextCatBtn">Show Me Next Cat</button>
@@ -85,7 +85,6 @@
                     alert(`Wallet connected: ${wallet.name}`);
                     connectBtn.textContent = 'Wallet Connected';
                     connectBtn.disabled = true;
-                    showCatBtn.disabled = false;
                 }
             } catch (error) {
                 alert('Failed to connect wallet. Please try again.');
@@ -104,9 +103,13 @@
                     throw new Error('Failed to fetch cat image');
                 }
                 const data = await response.json();
-                catImage.src = data[0].url;
-                catImage.style.display = 'block';
-                nextCatBtn.style.display = 'block';
+                if (data.length > 0 && data[0].url) {
+                    catImage.src = data[0].url;
+                    catImage.style.display = 'block';
+                    nextCatBtn.style.display = 'block';
+                } else {
+                    throw new Error('No image URL found');
+                }
             } catch (error) {
                 alert('Failed to load a cute cat. Please try again!');
             }
