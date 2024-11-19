@@ -60,7 +60,7 @@
         
         // TON Connect Integration
         const tonConnect = new TonConnect();
-        
+
         connectBtn.addEventListener('click', async () => {
             try {
                 // Request connection
@@ -86,7 +86,15 @@
         showCatBtn.addEventListener('click', async () => {
             showCatBtn.textContent = 'Loading...';
             try {
-                const response = await fetch('https://api.thecatapi.com/v1/images/search');
+                const apiKey = "live_eIPkwoKflxiWzKSvALSi6NwJiVHRozSliNwlXSMsxEmf86a92k33wAltKQFG33Tn";
+                const response = await fetch('https://api.thecatapi.com/v1/images/search', {
+                    headers: {
+                        'x-api-key': apiKey
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cat image');
+                }
                 const data = await response.json();
                 catImage.src = data[0].url;
                 catImage.style.display = 'block';
