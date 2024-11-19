@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>We Love You © iCat</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
     <style>
         body {
             display: flex;
@@ -48,48 +47,17 @@
         #nextCatBtn:hover {
             background-color: #005bb5;
         }
-        #connectBtn {
-            background-color: #ff8c00;
-        }
-        #connectBtn:hover {
-            background-color: #ffa733;
-        }
     </style>
 </head>
 <body>
     <button id="showCatBtn">Show Cat</button>
-    <button id="connectBtn">wallet</button>
     <img id="catImage" alt="Random Cute Cat">
     <button id="nextCatBtn">Show Me Next Cat</button>
     
     <script>
-        const connectBtn = document.getElementById('connectBtn');
         const showCatBtn = document.getElementById('showCatBtn');
         const nextCatBtn = document.getElementById('nextCatBtn');
         const catImage = document.getElementById('catImage');
-        
-        // TON Connect Integration
-        const tonConnect = new TonConnect();
-
-        connectBtn.addEventListener('click', async () => {
-            try {
-                // Request connection
-                await tonConnect.connectWallet({
-                    universalLink: "https://app.tonkeeper.com/ton-connect",
-                    bridgeUrl: "https://bridge.tonapi.io/bridge",
-                });
-                
-                // Check if connected
-                const wallet = await tonConnect.getWallet();
-                if (wallet) {
-                    alert(`Wallet connected: ${wallet.name}`);
-                    connectBtn.textContent = 'Wallet Connected';
-                    connectBtn.disabled = true;
-                }
-            } catch (error) {
-                alert('Failed to connect wallet. Please try again.');
-            }
-        });
 
         async function fetchCat() {
             try {
