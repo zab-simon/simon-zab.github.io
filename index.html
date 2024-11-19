@@ -3,46 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We Love You © iCat</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@0.1.0/dist/index.umd.js"></script>
+    <title>We Love You © iCat </title>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        #catImage {
+            max-width: 90%;
+            max-height: 70vh;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #ff8c00;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: #ffa733;
+        }
+        #connectBtn {
+            margin-bottom: 15px;
+            background-color: #007aff;
+        }
+        #connectBtn:hover {
+            background-color: #005bb5;
+        }
+    </style>
 </head>
 <body>
-    <h1>.</h1>
-    <button id="catButton">Show Cat</button>
-    <br><br>
-    <button id="connectWalletButton">Connect Wallet</button>
-    <br><br>
-    <img id="catImage" style="display:none;" width="300">
+    <button id="connectBtn">Connect Wallet</button>
+    <button id="showCatBtn" disabled>Show Cat</button>
+    <img id="catImage" alt="Random Cute Cat">
+    
     <script>
-        document.getElementById('catButton').addEventListener('click', () => {
-            document.getElementById('catImage').src = 'https://bookingcat.ru/wp-content/uploads/2018/08/jazyk-kotov0.jpg';
-            document.getElementById('catImage').style.display = 'block';
-        });
-
-        // Telegram Web App API
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Растягиваем приложение на весь экран
-        console.log('User Data:', tg.initDataUnsafe);
-        // Подключение TON Connect
+        const connectBtn = document.getElementById('connectBtn');
+        const showCatBtn = document.getElementById('showCatBtn');
+        const catImage = document.getElementById('catImage');
+        
         // TON Connect Integration
-        const tonConnect = new TonConnect({
-            manifestUrl: 'https://zab-simon.github.io/simon-zab.github.io/tonconnect-manifest.json'
+        const tonConnect = new TonConnect();
+        
+        connectBtn.addEventListener('click', async () => {
+            try {
+                // Request connection
+                await tonConnect.connectWallet({
+                    universalLink: "https://app.tonkeeper.com/ton-connect",
+                    bridgeUrl: "https://bridge.tonapi.io/bridge",
+                });
+                
+                // Check if connected
+                const wallet = await tonConnect.getWallet();
+                if (wallet) {
+                    alert(`Wallet connected: ${wallet.name}`);
+                    connectBtn.textContent = 'Wallet Connected';
+                    connectBtn.disabled = true;
+                    showCatBtn.disabled = false;
+                }
+            } catch (error) {
+                alert('Failed to connect wallet. Please try again.');
+            }
         });
 
-        // Кнопка для подключения кошелька
-        async function connectWallet() {
+        // Fetch and show random cute cat
+        showCatBtn.addEventListener('click', async () => {
+            showCatBtn.textContent = 'Loading...';
             try {
-                await tonConnect.connectWallet();
-                const walletInfo = tonConnect.wallet.getAccount();
-                alert(`Wallet connected: ${walletInfo.address}`);
+                const response = await fetch('https://api.thecatapi.com/v1/images/search');
+                const data = await response.json();
+                catImage.src = data[0].url;
+                catImage.style.display = 'block';
             } catch (error) {
-                console.error("Connection failed:", error);
-                alert("Failed to connect wallet.");
+                alert('Failed to load a cute cat. Please try again!');
+            } finally {
+                showCatBtn.textContent = 'Show Cat';
             }
-        }
-
-        // Событие подключения
-        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+        });
     </script>
 </body>
 </html>
