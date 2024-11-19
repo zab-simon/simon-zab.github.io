@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCat</title>
+</head>
+<body>
+    <h1>Click</h1>
+    <button id="catButton">Show Cat</button>
+    <br><br>
+    <img id="catImage" style="display:none;" width="300">
+    <script>
+        document.getElementById('catButton').addEventListener('click', () => {
+            document.getElementById('catImage').src = 'https://bookingcat.ru/wp-content/uploads/2018/08/jazyk-kotov0.jpg';
+            document.getElementById('catImage').style.display = 'block';
+        });
+
+        // Telegram Web App API
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Растягиваем приложение на весь экран
+        console.log('User Data:', tg.initDataUnsafe);
+    </script>
+</body>
+</html>
+
+            
+            
+            
+            
