@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iCat</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@0.1.0/dist/index.umd.js"></script>
 </head>
 <body>
     <h1>Click</h1>
     <button id="catButton">Show Cat</button>
+    <br><br>
+    <button id="connectWalletButton">Connect Wallet</button>
     <br><br>
     <img id="catImage" style="display:none;" width="300">
     <script>
@@ -20,11 +23,26 @@
         const tg = window.Telegram.WebApp;
         tg.expand(); // Растягиваем приложение на весь экран
         console.log('User Data:', tg.initDataUnsafe);
+        // Подключение TON Connect
+        // TON Connect Integration
+        const tonConnect = new TonConnect({
+            manifestUrl: 'https://zab-simon.github.io/simon-zab.github.io/tonconnect-manifest.json'
+        });
+
+        // Кнопка для подключения кошелька
+        async function connectWallet() {
+            try {
+                await tonConnect.connectWallet();
+                const walletInfo = tonConnect.wallet.getAccount();
+                alert(`Wallet connected: ${walletInfo.address}`);
+            } catch (error) {
+                console.error("Connection failed:", error);
+                alert("Failed to connect wallet.");
+            }
+        }
+
+        // Событие подключения
+        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
     </script>
 </body>
 </html>
-
-            
-            
-            
-            
