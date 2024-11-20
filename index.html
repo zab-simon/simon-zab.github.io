@@ -3,99 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We Love You © iCat</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            margin: 0;
-            background-color: #f9f9f9;
-        }
-        #catImage {
-            max-width: 90%;
-            max-height: 70vh;
-            border-radius: 8px;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            border: none;
-            color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        #showCatBtn {
-            background-color: #007aff;
-            margin-bottom: 15px;
-        }
-        #showCatBtn:hover {
-            background-color: #005bb5;
-        }
-        #nextCatBtn {
-            background-color: #007aff;
-            margin-top: 15px;
-            display: none;
-        }
-        #nextCatBtn:hover {
-            background-color: #005bb5;
-        }
-    </style>
+    <title>iCat</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@0.1.0/dist/index.umd.js"></script>
 </head>
 <body>
-    <button id="showCatBtn">Show Cat</button>
-    <img id="catImage" alt="Random Cute Cat">
-    <button id="nextCatBtn">More</button>
-    
+    <h1>Click</h1>
+    <button id="catButton">Show Cat</button>
+    <br><br>
+    <button id="connectWalletButton">Connect Wallet</button>
+    <br><br>
+    <img id="catImage" style="display:none;" width="300">
     <script>
-        const showCatBtn = document.getElementById('showCatBtn');
-        const nextCatBtn = document.getElementById('nextCatBtn');
-        const catImage = document.getElementById('catImage');
+        document.getElementById('catButton').addEventListener('click', () => {
+            document.getElementById('catImage').src = 'https://bookingcat.ru/wp-content/uploads/2018/08/jazyk-kotov0.jpg';
+            document.getElementById('catImage').style.display = 'block';
+        });
 
-        async function fetchCat() {
+        // Telegram Web App API
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Растягиваем приложение на весь экран
+        console.log('User Data:', tg.initDataUnsafe);
+
+        // TON Connect Integration
+        const tonConnect = new TonConnect({
+            manifestUrl: 'https://zab-simon.github.io/simon-zab.github.io/tonconnect-manifest.json'
+        });
+
+        async function connectWallet() {
             try {
-                const apiKey = "live_eIPkwoKflxiWzKSvALSi6NwJiVHRozSliNwlXSMsxEmf86a92k33wAltKQFG33Tn";
-                const response = await fetch('https://api.thecatapi.com/v1/images/search', {
-                    headers: {
-                        'x-api-key': apiKey
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch cat image');
-                }
-                const data = await response.json();
-                if (data.length > 0 && data[0].url) {
-                    catImage.src = data[0].url;
-                    catImage.style.display = 'block';
-                    nextCatBtn.style.display = 'block';
-                } else {
-                    throw new Error('No image URL found');
-                }
+                await tonConnect.connectWallet();
+                const walletInfo = tonConnect.wallet.getAccount();
+                alert(`Wallet connected: ${walletInfo.address}`);
             } catch (error) {
-                alert('Failed to load a cute cat. Please try again!');
+                console.error("Connection failed:", error);
+                alert("Failed to connect wallet.");
             }
         }
 
-        // Show first cat and hide "Show Cat" button
-        showCatBtn.addEventListener('click', async () => {
-            showCatBtn.textContent = 'Loading...';
-            await fetchCat();
-            showCatBtn.style.display = 'none';
-        });
-
-        // Show next random cat (renamed to "More")
-        nextCatBtn.addEventListener('click', async () => {
-            nextCatBtn.textContent = 'Loading...';
-            await fetchCat();
-            nextCatBtn.textContent = 'More';
-        });
+        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
     </script>
 </body>
 </html>
