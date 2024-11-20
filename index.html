@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We L OV E You © iCat</title>
+    <title>We LOVE You © iCat</title>
     <style>
         body {
             display: flex;
@@ -56,9 +56,14 @@
     
     <script>
         // Telegram Web App API for Full Screen Mode
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Activate Full Screen Mode
-        
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand(); // Activate Full Screen Mode
+            console.log("Telegram WebApp API доступен");
+        } else {
+            console.error("Telegram WebApp API не доступен. Проверьте окружение.");
+        }
+
         const showCatBtn = document.getElementById('showCatBtn');
         const nextCatBtn = document.getElementById('nextCatBtn');
         const catImage = document.getElementById('catImage');
@@ -73,19 +78,20 @@
                     }
                 });
                 if (!response.ok) {
-                    throw new Error('Failed to fetch cat image');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
                 if (data.length > 0 && data[0].url) {
                     catImage.src = data[0].url;
                     catImage.style.display = 'block';
                     nextCatBtn.style.display = 'block';
+                    console.log("Изображение загружено:", data[0].url);
                 } else {
-                    throw new Error('No image URL found');
+                    throw new Error("No image URL found");
                 }
             } catch (error) {
-                alert('Failed to load a cute cat. Please try again later!');
-                console.error(error);
+                console.error("Ошибка при загрузке изображения:", error);
+                alert("Не удалось загрузить изображение. Попробуйте ещё раз.");
             }
         }
 
