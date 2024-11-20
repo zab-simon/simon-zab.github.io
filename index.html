@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>123 We Love You © iCat</title>
+    <title> 44 We LOVE You © iCat</title>
     <style>
         body {
             display: flex;
@@ -53,6 +53,12 @@
             margin-top: 20px;
             display: none;
         }
+        #debug {
+            margin-top: 20px;
+            font-size: 14px;
+            color: gray;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -60,17 +66,23 @@
     <img id="catImage" alt="Random Cute Cat">
     <button id="nextCatBtn">More</button>
     <div id="errorMessage">Telegram WebApp API is not available. Please check if the app is opened inside Telegram.</div>
+    <div id="debug"></div>
 
     <script>
+        // Отладочная информация
+        const debugDiv = document.getElementById("debug");
+
         // Проверяем доступность Telegram Web App API
         const tg = window.Telegram?.WebApp;
 
         if (tg) {
             tg.expand(); // Активируем Full Screen Mode
             console.log("Telegram WebApp API доступен");
+            debugDiv.textContent = "Telegram WebApp API доступен: " + JSON.stringify(tg, null, 2);
         } else {
-            console.error("Telegram WebApp API не доступен. Проверьте, открывается ли мини-приложение через Telegram.");
+            console.error("Telegram WebApp API не доступен. Проверьте окружение.");
             document.getElementById("errorMessage").style.display = "block";
+            debugDiv.textContent = "Telegram WebApp API объект: " + JSON.stringify(window.Telegram);
         }
 
         const showCatBtn = document.getElementById('showCatBtn');
