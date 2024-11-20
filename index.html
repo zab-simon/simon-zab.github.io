@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We LOVe You © iCat</title>
+    <title>We LOV E You © iCat</title>
     <style>
         body {
             display: flex;
@@ -55,6 +55,10 @@
     <button id="nextCatBtn">More</button>
     
     <script>
+        // Telegram Web App API
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Расширяем приложение на весь экран
+
         const showCatBtn = document.getElementById('showCatBtn');
         const nextCatBtn = document.getElementById('nextCatBtn');
         const catImage = document.getElementById('catImage');
