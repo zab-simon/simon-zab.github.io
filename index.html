@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We L O V E  You © iCat</title>
+    <title>We L OV E You © iCat</title>
     <style>
         body {
             display: flex;
@@ -55,14 +55,15 @@
     <button id="nextCatBtn">More</button>
     
     <script>
-        // Telegram Web App API
+        // Telegram Web App API for Full Screen Mode
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем приложение на весь экран
-
+        tg.expand(); // Activate Full Screen Mode
+        
         const showCatBtn = document.getElementById('showCatBtn');
         const nextCatBtn = document.getElementById('nextCatBtn');
         const catImage = document.getElementById('catImage');
 
+        // Function to fetch and display a random cat image
         async function fetchCat() {
             try {
                 const apiKey = "live_eIPkwoKflxiWzKSvALSi6NwJiVHRozSliNwlXSMsxEmf86a92k33wAltKQFG33Tn";
@@ -83,18 +84,19 @@
                     throw new Error('No image URL found');
                 }
             } catch (error) {
-                alert('Failed to load a cute cat. Please try again!');
+                alert('Failed to load a cute cat. Please try again later!');
+                console.error(error);
             }
         }
 
-        // Show first cat and hide "Show Cat" button
+        // Event: Show first cat and hide "Show Cat" button
         showCatBtn.addEventListener('click', async () => {
             showCatBtn.textContent = 'Loading...';
             await fetchCat();
             showCatBtn.style.display = 'none';
         });
 
-        // Show next random cat (renamed to "More")
+        // Event: Show next random cat
         nextCatBtn.addEventListener('click', async () => {
             nextCatBtn.textContent = 'Loading...';
             await fetchCat();
