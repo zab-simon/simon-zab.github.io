@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We LOVE You © iCat</title>
+    <title>123 We Love You © iCat</title>
     <style>
         body {
             display: flex;
@@ -47,28 +47,37 @@
         #nextCatBtn:hover {
             background-color: #005bb5;
         }
+        #errorMessage {
+            color: red;
+            font-size: 16px;
+            margin-top: 20px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <button id="showCatBtn">Show Cat</button>
     <img id="catImage" alt="Random Cute Cat">
     <button id="nextCatBtn">More</button>
-    
+    <div id="errorMessage">Telegram WebApp API is not available. Please check if the app is opened inside Telegram.</div>
+
     <script>
-        // Telegram Web App API for Full Screen Mode
+        // Проверяем доступность Telegram Web App API
         const tg = window.Telegram?.WebApp;
+
         if (tg) {
-            tg.expand(); // Activate Full Screen Mode
+            tg.expand(); // Активируем Full Screen Mode
             console.log("Telegram WebApp API доступен");
         } else {
-            console.error("Telegram WebApp API не доступен. Проверьте окружение.");
+            console.error("Telegram WebApp API не доступен. Проверьте, открывается ли мини-приложение через Telegram.");
+            document.getElementById("errorMessage").style.display = "block";
         }
 
         const showCatBtn = document.getElementById('showCatBtn');
         const nextCatBtn = document.getElementById('nextCatBtn');
         const catImage = document.getElementById('catImage');
 
-        // Function to fetch and display a random cat image
+        // Функция для загрузки изображения кота
         async function fetchCat() {
             try {
                 const apiKey = "live_eIPkwoKflxiWzKSvALSi6NwJiVHRozSliNwlXSMsxEmf86a92k33wAltKQFG33Tn";
@@ -95,14 +104,14 @@
             }
         }
 
-        // Event: Show first cat and hide "Show Cat" button
+        // Показ первого кота
         showCatBtn.addEventListener('click', async () => {
             showCatBtn.textContent = 'Loading...';
             await fetchCat();
             showCatBtn.style.display = 'none';
         });
 
-        // Event: Show next random cat
+        // Показ следующего кота
         nextCatBtn.addEventListener('click', async () => {
             nextCatBtn.textContent = 'Loading...';
             await fetchCat();
