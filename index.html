@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,100 +37,60 @@
             background-color: #005bb5;
         }
     </style>
-</head>
-<body>
-    <button id="showCatBtn">Show Cat</button>
-    <img id="catImage" alt="Random Cute Cat">
-    <button id="nextCatBtn">More</button>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSKdvcX0JnMovrZgcAHT-eh4WKjMdmxMg",
+            authDomain: "icat-82046.firebaseapp.com",
+            databaseURL: "https://icat-82046-default-rtdb.firebaseio.com",
+            projectId: "icat-82046",
+            storageBucket: "icat-82046.appspot.com",
+            messagingSenderId: "674002549312",
+            appId: "1:674002549312:web:d5d590953859146010bda5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
         const tg = window.Telegram.WebApp;
 
         let sessionStart = null;
-        let sessionEnd = null;
 
         if (tg) {
-            tg.expand(); // Расширяем приложение на весь экран
-
-            // Фиксируем время начала сессии
+            tg.expand();
             sessionStart = new Date();
 
-            // Отправляем данные пользователя при открытии
             const userData = {
                 id: tg.initDataUnsafe.user.id,
                 first_name: tg.initDataUnsafe.user.first_name,
                 last_name: tg.initDataUnsafe.user.last_name || "",
                 username: tg.initDataUnsafe.user.username || "",
-                language_code: tg.initDataUnsafe.language_code,
-                platform: tg.platform,
                 timestamp: sessionStart.toISOString(),
-                action: "session_start",
             };
 
-            sendToBot(userData);
-        } else {
-            console.error("Telegram WebApp API недоступен.");
+            push(ref(database, "sessions/start"), userData);
         }
 
-        // Функция отправки данных в бот
-        function sendToBot(data) {
-            fetch("https://api.telegram.org/bot7693247060:AAG0jObny2bwv_j-4eADmz8sVYLaMUPJo-k/sendMessage", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    chat_id: "@Flappy_Bird_8_bot",
-                    text: `Данные пользователя:\n\n${JSON.stringify(data, null, 2)}`,
-                }),
-            }).catch(error => console.error("Ошибка отправки данных:", error));
-        }
-
-        // Фиксируем время окончания сессии
         window.addEventListener("beforeunload", () => {
-            sessionEnd = new Date();
-            const sessionDuration = Math.round((sessionEnd - sessionStart) / 1000); // Время в секундах
+            const sessionEnd = new Date();
+            const sessionDuration = Math.round((sessionEnd - sessionStart) / 1000);
 
             const sessionData = {
                 id: tg.initDataUnsafe.user.id,
-                timestamp: sessionEnd.toISOString(),
-                action: "session_end",
+                session_end: sessionEnd.toISOString(),
                 session_duration: sessionDuration,
             };
 
-            // Отправляем данные о сессии
-            sendToBot(sessionData);
-        });
-
-        // Функция для загрузки изображения кота
-        async function fetchCat() {
-            try {
-                const apiKey = "live_eIPkwoKflxiWzKSvALSi6NwJiVHRozSliNwlXSMsxEmf86a92k33wAltKQFG33Tn";
-                const response = await fetch('https://api.thecatapi.com/v1/images/search', {
-                    headers: { 'x-api-key': apiKey }
-                });
-                const data = await response.json();
-                if (data.length > 0 && data[0].url) {
-                    document.getElementById('catImage').src = data[0].url;
-                    document.getElementById('catImage').style.display = 'block';
-                    document.getElementById('nextCatBtn').style.display = 'block';
-                }
-            } catch (error) {
-                console.error("Ошибка загрузки кота:", error);
-            }
-        }
-
-        document.getElementById('showCatBtn').addEventListener('click', async () => {
-            document.getElementById('showCatBtn').textContent = 'Loading...';
-            await fetchCat();
-            document.getElementById('showCatBtn').style.display = 'none';
-        });
-
-        document.getElementById('nextCatBtn').addEventListener('click', async () => {
-            document.getElementById('nextCatBtn').textContent = 'Loading...';
-            await fetchCat();
-            document.getElementById('nextCatBtn').textContent = 'More';
+            push(ref(database, "sessions/end"), sessionData);
         });
     </script>
+</head>
+<body>
+    <button id="showCatBtn">Show Cat</button>
+    <img id="catImage" alt="Random Cute Cat">
+    <button id="nextCatBtn">More</button>
 </body>
 </html>
