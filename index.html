@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> 44 We LOVE You © iCat</title>
+    <title>We LOVE You © iCat</title>
     <style>
         body {
             display: flex;
@@ -47,42 +47,22 @@
         #nextCatBtn:hover {
             background-color: #005bb5;
         }
-        #errorMessage {
-            color: red;
-            font-size: 16px;
-            margin-top: 20px;
-            display: none;
-        }
-        #debug {
-            margin-top: 20px;
-            font-size: 14px;
-            color: gray;
-            word-wrap: break-word;
-        }
     </style>
 </head>
 <body>
     <button id="showCatBtn">Show Cat</button>
     <img id="catImage" alt="Random Cute Cat">
     <button id="nextCatBtn">More</button>
-    <div id="errorMessage">Telegram WebApp API is not available. Please check if the app is opened inside Telegram.</div>
-    <div id="debug"></div>
 
     <script>
-        // Отладочная информация
-        const debugDiv = document.getElementById("debug");
-
-        // Проверяем доступность Telegram Web App API
+        // Проверяем доступность Telegram WebApp API
         const tg = window.Telegram?.WebApp;
 
         if (tg) {
             tg.expand(); // Активируем Full Screen Mode
             console.log("Telegram WebApp API доступен");
-            debugDiv.textContent = "Telegram WebApp API доступен: " + JSON.stringify(tg, null, 2);
         } else {
-            console.error("Telegram WebApp API не доступен. Проверьте окружение.");
-            document.getElementById("errorMessage").style.display = "block";
-            debugDiv.textContent = "Telegram WebApp API объект: " + JSON.stringify(window.Telegram);
+            console.error("Telegram WebApp API недоступен. Проверьте, что вы открыли приложение внутри Telegram.");
         }
 
         const showCatBtn = document.getElementById('showCatBtn');
@@ -94,36 +74,33 @@
             try {
                 const apiKey = "live_eIPkwoKflxiWzKSvALSi6NwJiVHRozSliNwlXSMsxEmf86a92k33wAltKQFG33Tn";
                 const response = await fetch('https://api.thecatapi.com/v1/images/search', {
-                    headers: {
-                        'x-api-key': apiKey
-                    }
+                    headers: { 'x-api-key': apiKey }
                 });
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`Ошибка HTTP! статус: ${response.status}`);
                 }
                 const data = await response.json();
                 if (data.length > 0 && data[0].url) {
                     catImage.src = data[0].url;
                     catImage.style.display = 'block';
                     nextCatBtn.style.display = 'block';
-                    console.log("Изображение загружено:", data[0].url);
                 } else {
-                    throw new Error("No image URL found");
+                    throw new Error("URL изображения не найден.");
                 }
             } catch (error) {
-                console.error("Ошибка при загрузке изображения:", error);
                 alert("Не удалось загрузить изображение. Попробуйте ещё раз.");
+                console.error(error);
             }
         }
 
-        // Показ первого кота
+        // Обработчик для кнопки "Show Cat"
         showCatBtn.addEventListener('click', async () => {
             showCatBtn.textContent = 'Loading...';
             await fetchCat();
             showCatBtn.style.display = 'none';
         });
 
-        // Показ следующего кота
+        // Обработчик для кнопки "More"
         nextCatBtn.addEventListener('click', async () => {
             nextCatBtn.textContent = 'Loading...';
             await fetchCat();
