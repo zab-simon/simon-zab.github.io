@@ -53,21 +53,32 @@
     <button id="showCatBtn">Show Cat</button>
     <img id="catImage" alt="Random Cute Cat">
     <button id="nextCatBtn">More</button>
-
+    
     <script>
-        // Проверяем доступность Telegram WebApp API
+        // Telegram Web App API
         const tg = window.Telegram?.WebApp;
 
         if (tg) {
-            tg.expand(); // Активируем Full Screen Mode
-            console.log("Telegram WebApp API доступен");
-        } else {
-            console.error("Telegram WebApp API недоступен. Проверьте, что вы открыли приложение внутри Telegram.");
+            tg.expand(); // Расширяем приложение на весь экран
         }
 
-        const showCatBtn = document.getElementById('showCatBtn');
-        const nextCatBtn = document.getElementById('nextCatBtn');
-        const catImage = document.getElementById('catImage');
+        // Определение устройства iPad
+        const isIPad = /iPad|Macintosh/.test(navigator.userAgent) && 'ontouchend' in document;
+
+        if (isIPad) {
+            document.body.style.fontSize = "1.2rem";
+            document.body.style.maxWidth = "90%";
+            document.getElementById('catImage').style.maxWidth = "95%";
+            document.getElementById('catImage').style.maxHeight = "80vh";
+
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.style.fontSize = "20px";
+                button.style.padding = "15px 25px";
+            });
+
+            console.log("iPad detected: Adjusted styles for larger display.");
+        }
 
         // Функция для загрузки изображения кота
         async function fetchCat() {
@@ -76,35 +87,29 @@
                 const response = await fetch('https://api.thecatapi.com/v1/images/search', {
                     headers: { 'x-api-key': apiKey }
                 });
-                if (!response.ok) {
-                    throw new Error(`Ошибка HTTP! статус: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 if (data.length > 0 && data[0].url) {
-                    catImage.src = data[0].url;
-                    catImage.style.display = 'block';
-                    nextCatBtn.style.display = 'block';
-                } else {
-                    throw new Error("URL изображения не найден.");
+                    document.getElementById('catImage').src = data[0].url;
+                    document.getElementById('catImage').style.display = 'block';
+                    document.getElementById('nextCatBtn').style.display = 'block';
                 }
             } catch (error) {
-                alert("Не удалось загрузить изображение. Попробуйте ещё раз.");
-                console.error(error);
+                alert("Ошибка загрузки изображения. Попробуйте снова.");
             }
         }
 
-        // Обработчик для кнопки "Show Cat"
-        showCatBtn.addEventListener('click', async () => {
-            showCatBtn.textContent = 'Loading...';
+        // Обработчики кнопок
+        document.getElementById('showCatBtn').addEventListener('click', async () => {
+            document.getElementById('showCatBtn').textContent = 'Loading...';
             await fetchCat();
-            showCatBtn.style.display = 'none';
+            document.getElementById('showCatBtn').style.display = 'none';
         });
 
-        // Обработчик для кнопки "More"
-        nextCatBtn.addEventListener('click', async () => {
-            nextCatBtn.textContent = 'Loading...';
+        document.getElementById('nextCatBtn').addEventListener('click', async () => {
+            document.getElementById('nextCatBtn').textContent = 'Loading...';
             await fetchCat();
-            nextCatBtn.textContent = 'More';
+            document.getElementById('nextCatBtn').textContent = 'More';
         });
     </script>
 </body>
